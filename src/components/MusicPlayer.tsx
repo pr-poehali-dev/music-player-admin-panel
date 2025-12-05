@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import Icon from '@/components/ui/icon';
+import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 
 interface Track {
   id: string;
@@ -10,65 +11,49 @@ interface Track {
   album: string;
   cover: string;
   duration: number;
+  audioUrl?: string;
 }
 
 interface MusicPlayerProps {
   track: Track | null;
   onNext?: () => void;
   onPrevious?: () => void;
+  onTrackEnd?: () => void;
 }
 
-export default function MusicPlayer({ track, onNext, onPrevious }: MusicPlayerProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [volume, setVolume] = useState(70);
-  const [isMuted, setIsMuted] = useState(false);
-  const intervalRef = useRef<number | null>(null);
+export default function MusicPlayer({ track, onNext, onPrevious, onTrackEnd }: MusicPlayerProps) {
+  const {
+    isPlaying,
+    currentTime,
+    duration,
+    volume,
+    isMuted,
+    loadTrack,
+    togglePlayPause,
+    seek,
+    changeVolume,
+    toggleMute,
+  } = useAudioPlayer();
 
   useEffect(() => {
-    if (isPlaying) {
-      intervalRef.current = window.setInterval(() => {
-        setCurrentTime((prev) => {
-          if (track && prev >= track.duration) {
-            setIsPlaying(false);
-            return 0;
-          }
-          return prev + 1;
-        });
-      }, 1000);
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+    if (track) {
+      loadTrack(track);
     }
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isPlaying, track]);
+  }, [track]);
 
   const formatTime = (seconds: number) => {
+    if (isNaN(seconds)) return '0:00';
     const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
+    const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-  };
-
   const handleTimeChange = (value: number[]) => {
-    setCurrentTime(value[0]);
+    seek(value[0]);
   };
 
   const handleVolumeChange = (value: number[]) => {
-    setVolume(value[0]);
-    if (value[0] > 0) setIsMuted(false);
-  };
-
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
+    changeVolume(value[0]);
   };
 
   if (!track) return null;
@@ -103,7 +88,7 @@ export default function MusicPlayer({ track, onNext, onPrevious }: MusicPlayerPr
               variant="default"
               size="icon"
               className="h-10 w-10 rounded-full bg-primary hover:bg-primary/90"
-              onClick={handlePlayPause}
+              onClick={togglePlayPause}
             >
               {isPlaying ? (
                 <Icon name="Pause" size={20} className="text-primary-foreground" />
@@ -128,13 +113,13 @@ export default function MusicPlayer({ track, onNext, onPrevious }: MusicPlayerPr
             </span>
             <Slider
               value={[currentTime]}
-              max={track.duration}
+              max={duration || track.duration}
               step={1}
               onValueChange={handleTimeChange}
               className="flex-1"
             />
             <span className="text-xs text-muted-foreground w-10">
-              {formatTime(track.duration)}
+              {formatTime(duration || track.duration)}
             </span>
           </div>
         </div>

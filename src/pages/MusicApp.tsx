@@ -15,6 +15,7 @@ interface Track {
   album: string;
   cover: string;
   duration: number;
+  audioUrl?: string;
 }
 
 const mockTracks: Track[] = [
@@ -24,7 +25,8 @@ const mockTracks: Track[] = [
     artist: 'Артем Волков',
     album: 'Городские огни',
     cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop',
-    duration: 234
+    duration: 234,
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
   },
   {
     id: '2',
@@ -32,7 +34,8 @@ const mockTracks: Track[] = [
     artist: 'Мария Светлова',
     album: 'Времена года',
     cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop',
-    duration: 198
+    duration: 198,
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'
   },
   {
     id: '3',
@@ -40,7 +43,8 @@ const mockTracks: Track[] = [
     artist: 'DJ Nebula',
     album: 'Space Journey',
     cover: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300&h=300&fit=crop',
-    duration: 312
+    duration: 312,
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
   },
   {
     id: '4',
@@ -48,7 +52,8 @@ const mockTracks: Track[] = [
     artist: 'Анна Морская',
     album: 'Берег мечты',
     cover: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=300&h=300&fit=crop',
-    duration: 267
+    duration: 267,
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3'
   },
   {
     id: '5',
@@ -56,7 +61,8 @@ const mockTracks: Track[] = [
     artist: 'Beat Masters',
     album: 'Club Hits 2024',
     cover: 'https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=300&h=300&fit=crop',
-    duration: 189
+    duration: 189,
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3'
   },
   {
     id: '6',
@@ -64,7 +70,8 @@ const mockTracks: Track[] = [
     artist: 'Павел Тихонов',
     album: 'Акустика',
     cover: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop',
-    duration: 245
+    duration: 245,
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3'
   }
 ];
 
