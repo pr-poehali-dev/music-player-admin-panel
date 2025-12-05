@@ -25,7 +25,7 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
             <Icon name="Music" size={24} className="text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-xl font-bold">MusicStream</h1>
+            <h1 className="text-xl font-bold">BlueMusic</h1>
             <p className="text-xs text-muted-foreground">Твоя музыка</p>
           </div>
         </div>
