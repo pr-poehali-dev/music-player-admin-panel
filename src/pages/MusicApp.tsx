@@ -2,11 +2,19 @@ import { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import MusicPlayer from '@/components/MusicPlayer';
 import TrackCard from '@/components/TrackCard';
+import AudioVisualizer from '@/components/AudioVisualizer';
+import LyricsDisplay from '@/components/LyricsDisplay';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
+import { useAudioPlayer } from '@/hooks/useAudioPlayer';
+
+interface LyricsLine {
+  time: number;
+  text: string;
+}
 
 interface Track {
   id: string;
@@ -16,6 +24,7 @@ interface Track {
   cover: string;
   duration: number;
   audioUrl?: string;
+  lyrics?: LyricsLine[];
 }
 
 const mockTracks: Track[] = [
@@ -26,7 +35,15 @@ const mockTracks: Track[] = [
     album: 'Городские огни',
     cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop',
     duration: 234,
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    lyrics: [
+      { time: 0, text: 'Огни мерцают в темноте' },
+      { time: 5, text: 'Город засыпает медленно' },
+      { time: 10, text: 'Я иду по пустым улицам' },
+      { time: 15, text: 'Ночной город зовёт меня' },
+      { time: 20, text: 'В тишине слышу только шаги' },
+      { time: 25, text: 'И неоновый свет витрин' },
+    ]
   },
   {
     id: '2',
@@ -35,7 +52,14 @@ const mockTracks: Track[] = [
     album: 'Времена года',
     cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop',
     duration: 198,
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+    lyrics: [
+      { time: 0, text: 'Капли стучат по стеклу' },
+      { time: 4, text: 'Летний дождь пришёл внезапно' },
+      { time: 8, text: 'Освежая жаркий день' },
+      { time: 12, text: 'Промокли улицы и крыши' },
+      { time: 16, text: 'Но на душе так легко' },
+    ]
   },
   {
     id: '3',
@@ -84,6 +108,8 @@ export default function MusicApp() {
     { id: '2', name: 'Для работы', tracks: 24, cover: mockTracks[1].cover },
     { id: '3', name: 'Вечерняя музыка', tracks: 18, cover: mockTracks[2].cover },
   ]);
+
+  const { isPlaying, currentTime } = useAudioPlayer();
 
   const [newTrackForm, setNewTrackForm] = useState({
     title: '',
@@ -157,21 +183,35 @@ export default function MusicApp() {
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Сейчас играет</h2>
       {currentTrack ? (
-        <div className="max-w-2xl mx-auto">
-          <Card className="p-8">
-            <div className="flex flex-col items-center space-y-6">
-              <img 
-                src={currentTrack.cover} 
-                alt={currentTrack.title}
-                className="w-80 h-80 object-cover rounded-2xl shadow-2xl"
-              />
-              <div className="text-center">
-                <h3 className="text-3xl font-bold mb-2">{currentTrack.title}</h3>
-                <p className="text-xl text-muted-foreground">{currentTrack.artist}</p>
-                <p className="text-sm text-muted-foreground mt-1">{currentTrack.album}</p>
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="p-8">
+              <div className="flex flex-col items-center space-y-6">
+                <div className="relative w-full max-w-sm">
+                  <img 
+                    src={currentTrack.cover} 
+                    alt={currentTrack.title}
+                    className="w-full aspect-square object-cover rounded-2xl shadow-2xl"
+                  />
+                  <div className="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg p-3">
+                    <AudioVisualizer isPlaying={isPlaying} barCount={30} className="h-16" />
+                  </div>
+                </div>
+                <div className="text-center w-full">
+                  <h3 className="text-3xl font-bold mb-2">{currentTrack.title}</h3>
+                  <p className="text-xl text-muted-foreground">{currentTrack.artist}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{currentTrack.album}</p>
+                </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+
+            {currentTrack.lyrics && currentTrack.lyrics.length > 0 && (
+              <LyricsDisplay 
+                lyrics={currentTrack.lyrics} 
+                currentTime={currentTime}
+              />
+            )}
+          </div>
         </div>
       ) : (
         <Card className="p-12 text-center">
