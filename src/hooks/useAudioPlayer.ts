@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 interface Track {
   id: string;
@@ -54,15 +54,18 @@ export function useAudioPlayer() {
     }
   }, [volume, isMuted]);
 
-  const loadTrack = (track: Track | null) => {
-    if (!audioRef.current || !track?.audioUrl) return;
+  const loadTrack = useCallback((track: Track | null) => {
+    if (!audioRef.current || !track) return;
     
-    audioRef.current.src = track.audioUrl;
-    audioRef.current.load();
+    if (track.audioUrl) {
+      audioRef.current.src = track.audioUrl;
+      audioRef.current.load();
+    }
     setCurrentTime(0);
-  };
+    setIsPlaying(false);
+  }, []);
 
-  const play = async () => {
+  const play = useCallback(async () => {
     if (!audioRef.current) return;
     
     try {
@@ -71,38 +74,38 @@ export function useAudioPlayer() {
     } catch (error) {
       console.error('Error playing audio:', error);
     }
-  };
+  }, []);
 
-  const pause = () => {
+  const pause = useCallback(() => {
     if (!audioRef.current) return;
     
     audioRef.current.pause();
     setIsPlaying(false);
-  };
+  }, []);
 
-  const togglePlayPause = () => {
+  const togglePlayPause = useCallback(() => {
     if (isPlaying) {
       pause();
     } else {
       play();
     }
-  };
+  }, [isPlaying, pause, play]);
 
-  const seek = (time: number) => {
+  const seek = useCallback((time: number) => {
     if (!audioRef.current) return;
     
     audioRef.current.currentTime = time;
     setCurrentTime(time);
-  };
+  }, []);
 
-  const changeVolume = (newVolume: number) => {
+  const changeVolume = useCallback((newVolume: number) => {
     setVolume(newVolume);
     if (newVolume > 0) setIsMuted(false);
-  };
+  }, []);
 
-  const toggleMute = () => {
+  const toggleMute = useCallback(() => {
     setIsMuted(!isMuted);
-  };
+  }, [isMuted]);
 
   return {
     isPlaying,

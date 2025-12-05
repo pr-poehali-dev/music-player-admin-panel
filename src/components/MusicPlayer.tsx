@@ -39,7 +39,7 @@ export default function MusicPlayer({ track, onNext, onPrevious, onTrackEnd }: M
     if (track) {
       loadTrack(track);
     }
-  }, [track]);
+  }, [track, loadTrack]);
 
   const formatTime = (seconds: number) => {
     if (isNaN(seconds)) return '0:00';
