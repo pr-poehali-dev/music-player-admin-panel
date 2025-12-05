@@ -20,10 +20,12 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
   return (
     <div className="w-64 bg-sidebar border-r border-sidebar-border h-screen fixed left-0 top-0 flex flex-col">
       <div className="p-6">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-            <Icon name="Music" size={24} className="text-primary-foreground" />
-          </div>
+        <div className="flex items-center gap-3">
+          <img 
+            src="https://cdn.poehali.dev/projects/a74b180d-2247-4cd1-b29d-921fdb8c9762/files/a6ac8a8d-67a8-401c-ac54-c5750be0f30e.jpg" 
+            alt="BlueMusic Logo"
+            className="w-12 h-12 rounded-xl object-cover"
+          />
           <div>
             <h1 className="text-xl font-bold">BlueMusic</h1>
             <p className="text-xs text-muted-foreground">Твоя музыка</p>
